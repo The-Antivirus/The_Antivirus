@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: The_Antivirus
-Version: 0.1.0
+Version: 0.1.1
 Summary: Antivirus software with DDoS prevention and firewall
 Home-page: https://github.com/The-Antivirus/The_Antivirus
 Author: Daniel Grosso
@@ -12,6 +12,7 @@ Project-URL: Tracker, https://github.com/The-Antivirus/The_Antivirus/issues
 Requires-Python: >=3.6
 Description-Content-Type: text/markdown
 License-File: LICENSE
+Requires-Dist: psutil>=5.9.0
 Provides-Extra: dev
 Requires-Dist: pytest>=6.0; extra == "dev"
 Requires-Dist: pytest-cov>=2.0; extra == "dev"

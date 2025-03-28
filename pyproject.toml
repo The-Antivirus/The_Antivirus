@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "The_Antivirus"
-version = "0.1.0"
+version = "0.1.1"
 description = "Antivirus software with DDoS prevention and firewall"
 readme = "README.md"
 license = {text = "MIT"}
@@ -12,7 +12,9 @@ authors = [
     {name = "Daniel Grosso", email = "danielka17.grosso@gmail.com"}
 ]
 requires-python = ">=3.6"
-dependencies = []
+dependencies = [
+    "psutil>=5.9.0"
+]
 
 [project.urls]
 Documentation = "https://github.com/The-Antivirus/The_Antivirus#readme"
