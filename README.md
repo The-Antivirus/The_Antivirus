@@ -97,9 +97,11 @@ Contributions are welcome! If you’d like to contribute to this project:
 ---
 
 ## Authors
-- **Daniel Grosso**  
-  Email: [danielka17.grosso@gmail.com](mailto:danielka17.grosso@gmail.com)  
-  GitHub: [Daniel Grosso](https://github.com/The-Antivirus)
+- ![Danielscos](https://www.gravatar.com/avatar/b9c7b6f8c7b3c4b8b8c8e8d8f8a8a8b?s=100)  
+  **Danielscos**  
+  Email: [sawfish696@anglernook.com](mailto:sawfish696@anglernook.com)  
+
+- **Almogoxt**
 
 ---
 
