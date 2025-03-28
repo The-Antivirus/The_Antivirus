@@ -97,7 +97,7 @@ Contributions are welcome! If you’d like to contribute to this project:
 ---
 
 ## Authors
-- ![Danielscos](https://www.gravatar.com/avatar/b9c7b6f8c7b3c4b8b8c8e8d8f8a8a8b?s=100)  
+- ![Danielscos](https://www.gravatar.com/avatar/danielka17.grosso@gmail.com)  
   **Danielscos**  
   Email: [sawfish696@anglernook.com](mailto:sawfish696@anglernook.com)  
 
