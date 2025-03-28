@@ -1,0 +1,13 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+setup.py
+The_Antivirus.egg-info/PKG-INFO
+The_Antivirus.egg-info/SOURCES.txt
+The_Antivirus.egg-info/dependency_links.txt
+The_Antivirus.egg-info/requires.txt
+The_Antivirus.egg-info/top_level.txt
+src/__init__.py
+src/main.py
+tests/test_main.py

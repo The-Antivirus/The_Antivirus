@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "The_Antivirus"
+version = "0.1.0"
+description = "Antivirus software with DDoS prevention and firewall"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Daniel Grosso", email = "danielka17.grosso@gmail.com"}
+]
+requires-python = ">=3.6"
+dependencies = []
+
+[project.urls]
+Documentation = "https://github.com/The-Antivirus/The_Antivirus#readme"
+Source = "https://github.com/The-Antivirus/The_Antivirus"
+Tracker = "https://github.com/The-Antivirus/The_Antivirus/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "flake8>=3.9",
+    "black>=22.0",
+    "isort>=5.0",
+    "mypy>=0.910",
+    "twine>=4.0",
+    "sphinx>=4.0"
+]

@@ -1,0 +1,33 @@
+Metadata-Version: 2.4
+Name: The_Antivirus
+Version: 0.1.0
+Summary: Antivirus software with DDoS prevention and firewall
+Home-page: https://github.com/The-Antivirus/The_Antivirus
+Author: Daniel Grosso
+Author-email: Daniel Grosso <danielka17.grosso@gmail.com>
+License: MIT
+Project-URL: Documentation, https://github.com/The-Antivirus/The_Antivirus#readme
+Project-URL: Source, https://github.com/The-Antivirus/The_Antivirus
+Project-URL: Tracker, https://github.com/The-Antivirus/The_Antivirus/issues
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0; extra == "dev"
+Requires-Dist: pytest-cov>=2.0; extra == "dev"
+Requires-Dist: flake8>=3.9; extra == "dev"
+Requires-Dist: black>=22.0; extra == "dev"
+Requires-Dist: isort>=5.0; extra == "dev"
+Requires-Dist: mypy>=0.910; extra == "dev"
+Requires-Dist: twine>=4.0; extra == "dev"
+Requires-Dist: sphinx>=4.0; extra == "dev"
+Dynamic: author
+Dynamic: home-page
+Dynamic: license-file
+Dynamic: requires-python
+
+# The Antivirus
+
+![Antivirus Logo](images/Untitled-1-01.png)
+
+cool project!
