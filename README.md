@@ -67,27 +67,6 @@ python -m The_Antivirus
 
 ---
 
-## Development
-
-### Running Tests
-To run the tests, use:
-```bash
-pytest
-```
-
-### Code Quality
-Ensure code quality with the following tools:
-- `flake8` for linting:
-  ```bash
-  flake8 .
-  ```
-- `black` for formatting:
-  ```bash
-  black .
-  ```
-
----
-
 ## Contributing
 Contributions are welcome! If you’d like to contribute to this project:
 1. Fork the repository.
