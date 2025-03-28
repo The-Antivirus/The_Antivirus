@@ -23,7 +23,7 @@ Tracker = "https://github.com/The-Antivirus/The_Antivirus/issues"
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=6.0",  # Add pytest here
+    "pytest>=6.0",
     "pytest-cov>=2.0",
     "flake8>=3.9",
     "black>=22.0",

@@ -1,5 +1,5 @@
 import pytest
-from src.main import AntivirusApp  # Importing AntivirusApp from src/main.py
+from src.main import AntivirusApp
 
 @pytest.fixture
 def app():
