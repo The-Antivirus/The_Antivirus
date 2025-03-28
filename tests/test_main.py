@@ -1,5 +1,5 @@
 import pytest
-from The_Antivirus.main import AntivirusApp
+from src.main import AntivirusApp  # Importing AntivirusApp from src/main.py
 
 @pytest.fixture
 def app():
@@ -15,4 +15,4 @@ def test_app_initialization(app):
 def test_create_main_screen(app):
     """Test that the main screen is created without errors."""
     app.create_main_screen()
-    assert app.root.winfo_children() 
+    assert app.root.winfo_children()
