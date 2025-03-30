@@ -5,11 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "The_Antivirus"
 version = "0.1.2"
-description = "Antivirus software"
-readme = "README.md"
-license = {text = "MIT"}
+description = "Antivirus software with DDoS prevention and firewall"
+readme = {file = "README.md", content-type = "text/markdown"} 
+license = "MIT" 
 authors = [
-    {name = "Daniel Grosso", email = "danielka17.grosso@gmail.com"}
+    {name = "Daniel Grosso", email = "danielka17.grosso@gmail.com"},
+    {name = "Almog", email = "almogoxt@gmail.com"}
 ]
 requires-python = ">=3.6"
 dependencies = [
@@ -33,3 +34,6 @@ dev = [
     "twine>=4.0",
     "sphinx>=4.0"
 ]
+
+[project.scripts]
+the-antivirus = "ui:main"

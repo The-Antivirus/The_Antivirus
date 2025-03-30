@@ -115,7 +115,7 @@ def start_server(server_running_callback, server_socket_callback):
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server.bind(("0.0.0.0", 9999))
     server.listen(5)
-    server_socket_callback(server)  # Pass the server socket back to the caller
+    server_socket_callback(server) 
     print("Server listening on port 9999")
 
     while server_running_callback():
@@ -126,7 +126,6 @@ def start_server(server_running_callback, server_socket_callback):
             client_thread = threading.Thread(target=handle_client, args=(client_socket, client_address))
             client_thread.start()
         except OSError:
-            # This exception occurs when the socket is closed
             break
     print("Server stopped")
 
