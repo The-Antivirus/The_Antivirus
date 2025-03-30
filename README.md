@@ -18,6 +18,7 @@ The Antivirus is a Python-based application designed to provide essential securi
 - Python 3.6 or higher
 - Dependencies:
   - `psutil>=5.9.0`
+  - `PyQt6`
   - Standard Python libraries: `hashlib`, `os`, `socket`, `threading`, `time`, `tkinter`, `collections`, `ipaddress`
 
 ---
