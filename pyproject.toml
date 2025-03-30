@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "The_Antivirus"
-version = "0.1.1"
-description = "Antivirus software with DDoS prevention and firewall"
+version = "0.1.2"
+description = "Antivirus software"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [

@@ -74,7 +74,7 @@ Contributions are welcome! If you’d like to contribute to this project:
 3. Submit a pull request with a detailed description of your changes.
 
 ---
-
+~
 ## Authors
 - ![Danielscos](https://www.gravatar.com/avatar/2bc553781cecd02a316c59729e84e33e?s=100)  
   **Danielscos**  
