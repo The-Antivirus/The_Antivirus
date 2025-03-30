@@ -166,7 +166,7 @@ class AntivirusUI(QMainWindow):
                 child.widget().deleteLater()
 
 
-def main():
+def run_app():
     app = QApplication(sys.argv)
     window = AntivirusUI()
     window.show()
@@ -174,4 +174,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run_app()
