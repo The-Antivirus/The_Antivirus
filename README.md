@@ -35,7 +35,7 @@ pip install The_Antivirus
 1. Clone the repository:
    ```bash
    git clone https://github.com/The-Antivirus/The_Antivirus.git
-   cd The_Antivirus
+   cd The_Antivirus/The_Antivirus/src
    ```
 
 2. Install the package:
@@ -53,7 +53,7 @@ pip install The_Antivirus
 ## Usage
 Run the application using the following command:
 ```bash
-python -m The_Antivirus
+python ui.py
 ```
 
 ### Features in the Application:
