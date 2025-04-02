@@ -29,6 +29,7 @@ The Antivirus is a Python-based application designed to provide essential securi
 You can install the latest version of The Antivirus directly from PyPI:
 ```bash
 pip install The_Antivirus
+cd The_Antivirus/The_Antivirus/src
 ```
 
 ### Option 2: Install from Source
