@@ -1,0 +1,12 @@
+psutil>=5.9.0
+PyQt6
+
+[dev]
+pytest>=6.0
+pytest-cov>=2.0
+flake8>=3.9
+black>=22.0
+isort>=5.0
+mypy>=0.910
+twine>=4.0
+sphinx>=4.0
