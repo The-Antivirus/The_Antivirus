@@ -62,7 +62,7 @@ def load_known_signatures(file_name):
 
 
 def scan_running_processes():
-    known_signatures = load_known_signatures(r'C:\Users\User\Downloads\The_Antivirus-main\src\known_signatures.json')
+    known_signatures = load_known_signatures(r'Downloads\The_Antivirus-main\The_Antivirus-main\src\known_signatures.json')
     results = []
     malicious_found = False
     for process in psutil.process_iter(attrs=['pid', 'name', 'exe']):
