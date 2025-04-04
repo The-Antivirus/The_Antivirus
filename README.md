@@ -35,7 +35,7 @@ pip install The-Antivirus
 1. Clone the repository:
    ```bash
    git clone https://github.com/The-Antivirus/The_Antivirus.git
-   cd The_Antivirus/The_Antivirus/src
+   cd Downloads\The_Antivirus-main\src
    ```
 
 2. Install the package:
