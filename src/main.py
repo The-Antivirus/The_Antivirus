@@ -6,6 +6,7 @@ import time
 from collections import defaultdict
 import ipaddress
 import psutil
+import json
 # made by AlmogOxtrud
 firewall_rules = {
     "allow": ["192.168.1.0/24", "10.0.0.0/8"],
@@ -48,17 +49,20 @@ class RateLimiter:
             return True
 
 
-def load_known_signatures(file_path):
-    known_signatures = set()
+def load_known_signatures(file_name):
     try:
-        with open(file_path, 'r') as f:
-            for line in f:
-                known_signatures.add(line.strip())
+        with open(file_name, 'r') as json_file:
+            data = json.load(json_file)
+        print(f"Data read from '{file_name}':")
+        print(data)
+        return data
     except FileNotFoundError:
-        print(f"Signature file {file_path} not found.")
-    return known_signatures
+        print(f"File '{file_name}' not found.")
+        return None
+
+
 def scan_running_processes():
-    known_signatures = load_known_signatures('known_signatures.txt')
+    known_signatures = load_known_signatures(r'C:\Users\User\Downloads\The_Antivirus-main\src\known_signatures.json')
     results = []
     malicious_found = False
     for process in psutil.process_iter(attrs=['pid', 'name', 'exe']):
