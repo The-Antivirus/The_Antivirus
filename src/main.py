@@ -6,7 +6,7 @@ import time
 from collections import defaultdict
 import ipaddress
 import psutil
-
+# made by AlmogOxtrud
 firewall_rules = {
     "allow": ["192.168.1.0/24", "10.0.0.0/8"],
     "block": ["203.0.113.0/24", "198.51.100.0/24"],
@@ -48,33 +48,19 @@ class RateLimiter:
             return True
 
 
+def load_known_signatures(file_path):
+    known_signatures = set()
+    try:
+        with open(file_path, 'r') as f:
+            for line in f:
+                known_signatures.add(line.strip())
+    except FileNotFoundError:
+        print(f"Signature file {file_path} not found.")
+    return known_signatures
 def scan_running_processes():
-    known_signatures = {
-        'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
-        'a3b5c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852a123',
-        '707b752f6bd89d4f97d08602d0546a56d27acfe00e6d5df2a2cb67c5e2eeee30',
-        'd0ed92fc807399e522729fb4e47619b295ee19ea8f6f8b2783af449c9e9b70ca',
-        'ccc128b0e22257e0ae1b4f87b7660fad90fd4ca71fdf96030d3361220805626b',
-        'cc357e0c0d1b4b0c9cdaaa2f7fd530c7fcee6c62136462c1533d50971f97d976',
-        '314c7809fde7cf6057a79ae5f14382232c64abfdb4bee5c4ca3a467115052612',
-        '7075c0dc922a35a37938013c66a4689ce2048303d5e5ff78e3f0ef9c5c161e95',
-        '87bc45c5391ad7c0d752e6d1d0f0eaa6a85bd1fd9412a59f756531e11dad7d14',
-        'a896l274m892o262g588o262x756t372r019u287d1898ddf2871gh18adf18d9r',
-        '536012472276876c66374e461e0602d09258425560ba0558b67e118d8add90b6',
-        '44e089be452e07bfff71b7aeee2fc9fa521a70356395730948c8077342b18ebc',
-        '716176a7908908c64ef32e0fab308cc25d444d565573fe0fad432d61ce7e0a92',
-        'ba5e410b54cdce460216aa7234e50f6ebd25badb5ebbc65337ce67327eb25e57',
-        '27efe62f4344b7e6c626e2a3bb1e6307c6e2c522d9c99a1f5e8ceaa4fa211b15',
-        '79a64e6fe4655e53d3efd7a7dbedd6aa6dc4b00dcc07e8351505d20e1ce2c1d0',
-        '9c460f2355bf32e2c407767729ba0b0134f4563be9730e51c70dbaa09c25fb32',
-        '1d25f7af62786393a933913bcbd4e0412b7261817ecea3aeb60e2294adaece9d',
-        '2f7c4001b496b4bb53c75014f83a55bb7cdf06254806f5cd4591c5af4e146de7',
-        '3d2d4932b38d1e1d37482e994eba2c33927a90e9452ee52c06b5049cfa96fb58'
-    }
-
+    known_signatures = load_known_signatures('known_signatures.txt')
     results = []
     malicious_found = False
-
     for process in psutil.process_iter(attrs=['pid', 'name', 'exe']):
         try:
             exe_path = process.info['exe']
@@ -88,10 +74,8 @@ def scan_running_processes():
             results.append(f"Access Denied: {process.info['name']} (PID: {process.info['pid']})")
         except Exception as e:
             results.append(f"Error scanning {process.info['name']} (PID: {process.info['pid']}): {e}")
-
     if not malicious_found:
         results.append("No malicious activities were detected.")
-
     results.append("Process scan complete.")
     return results
 
