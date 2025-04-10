@@ -13,15 +13,8 @@ from PyQt6.QtWidgets import (
     QFrame
 )
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import (
-    QFont,
-    QPalette,
-    QBrush,
-    QPixmap
-)
+from PyQt6.QtGui import QFont
 import main
-
-
 class AntivirusUI(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -30,16 +23,11 @@ class AntivirusUI(QMainWindow):
         self.server_running = False
         self.server_thread = None
         self.server_socket = None
-
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
         self.layout = QVBoxLayout(self.central_widget)
 
-        self.create_main_screen()
-
-    def create_main_screen(self):
-        self.clear_layout()
-        button_style = """
+        self.button_style_open = """
             QPushButton {
                 border-radius: 7px;
                 padding: 10px;
@@ -48,7 +36,8 @@ class AntivirusUI(QMainWindow):
                 font-size: 10px;
             }
         """
-        button_style2 = """
+
+        self.button_style_close = """
             QPushButton {
                 border-radius: 7px;
                 padding: 10px;
@@ -57,69 +46,77 @@ class AntivirusUI(QMainWindow):
                 font-size: 10px;
             }
         """
+        self.frame_visible = False
+        self.create_main_screen()
 
-        font = QFont()
-        font.setFamily("Segoe Script")
-        font.setPointSize(30)
-        font.setBold(True)
-        font2 = QFont()
-        font2.setFamily("Segoe Script")
-        font2.setPointSize(10)
-        font2.setBold(True)
-        
-        frame = QFrame(self)
-        frame.setFrameShape(QFrame.Shape.Box)
-        frame.setFrameShadow(QFrame.Shadow.Sunken)
-        frame.setLineWidth(0)
-        frame.setFixedWidth(150)
-        frame.setFixedHeight(500)
-        
+    def create_main_screen(self):
+        self.clear_layout()
 
-        frame_layout = QVBoxLayout(frame)
-        title = QLabel("Antivirus Project")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 30px; font-weight: bold; color: #32CD99;")
-        title.setFont(font)
-        self.layout.addWidget(title)
+        self.frame = QFrame(self)
+        self.frame.setFrameShape(QFrame.Shape.Box)
+        self.frame.setLineWidth(0)
+        self.frame.setFixedWidth(150)
+        self.frame.setFixedHeight(500)
+        self.frame.hide()
+
+        self.frame_layout = QVBoxLayout(self.frame)
+
+        font_title = QFont("Segoe Script", 30, QFont.Weight.Bold)
+        self.title_label = QLabel("Antivirus Project")
+        self.title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.title_label.setStyleSheet("font-size: 30px; font-weight: bold; color: #32CD99;")
+        self.title_label.setFont(font_title)
+        self.layout.addWidget(self.title_label)
 
         scan_button = QPushButton("Scan for Malware")
-        scan_button.setStyleSheet(button_style)
+        scan_button.setStyleSheet(self.button_style_open)
         scan_button.clicked.connect(self.create_scanner_ui)
-        scan_button.setFont(font2)
-        frame_layout.addWidget(scan_button)
+        scan_button.setFont(QFont("Segoe Script", 10, QFont.Weight.Bold))
+        self.frame_layout.addWidget(scan_button)
 
-        firewall_button = QPushButton("Manage Firewall")
-        firewall_button.setStyleSheet(button_style)
-        firewall_button.clicked.connect(self.create_firewall_ui)
-        firewall_button.setFont(font2)
-        frame_layout.addWidget(firewall_button)
+        self.firewall_button = QPushButton("Manage Firewall")
+        self.firewall_button.setStyleSheet(self.button_style_open)
+        self.firewall_button.clicked.connect(self.create_firewall_ui)
+        self.firewall_button.setFont(QFont("Segoe Script", 10, QFont.Weight.Bold))
+        self.frame_layout.addWidget(self.firewall_button)
 
         if self.server_running:
-            status_label = QLabel("Anti-DDoS Server is running")
-            status_label.setStyleSheet("font-size: 15px; color: #32CD99; font-weight: bold;")
-            self.layout.addWidget(status_label)
-            
             stop_button = QPushButton("Turn Off ADS")
-            stop_button.setStyleSheet(button_style2)
+            stop_button.setStyleSheet(self.button_style_close)
             stop_button.clicked.connect(self.stop_anti_ddos)
-            stop_button.setFont(font2)
-            frame_layout.addWidget(stop_button)
+            stop_button.setFont(QFont("Segoe Script", 10, QFont.Weight.Bold))
+            self.frame_layout.addWidget(stop_button)
         else:
             start_button = QPushButton("Turn On ADS")
-            start_button.setStyleSheet(button_style)
+            start_button.setStyleSheet(self.button_style_open)
             start_button.clicked.connect(self.start_anti_ddos)
-            start_button.setFont(font2)
-            frame_layout.addWidget(start_button)
+            start_button.setFont(QFont("Segoe Script", 10, QFont.Weight.Bold))
+            self.frame_layout.addWidget(start_button)
 
-        self.layout.addWidget(frame)
+        self.toggle_button = QPushButton("Open")
+        self.toggle_button.setStyleSheet(self.button_style_open)
+        self.toggle_button.clicked.connect(self.toggle_frame)
+        self.toggle_button.setFont(QFont("Segoe Script", 10, QFont.Weight.Bold))
+        self.toggle_button.setFixedWidth(80)
+        self.layout.addWidget(self.toggle_button)
+
+        self.layout.addWidget(self.frame)
+
+    def toggle_frame(self):
+        if not self.frame_visible:
+            self.frame.show()
+            self.toggle_button.setText("Close")
+            self.toggle_button.setStyleSheet(self.button_style_close)
+            self.frame_visible = True
+        else:
+            self.frame.hide()
+            self.toggle_button.setText("Open")
+            self.toggle_button.setStyleSheet(self.button_style_open)
+            self.frame_visible = False
 
     def create_scanner_ui(self):
         self.clear_layout()
-
-        font2 = QFont()
-        font2.setFamily("Segoe Script")
-        font2.setPointSize(10)
-        font2.setBold(True)
+        font2 = QFont("Segoe Script", 10, QFont.Weight.Bold)
 
         title = QLabel("Malware Scanner")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -150,11 +147,7 @@ class AntivirusUI(QMainWindow):
 
     def create_firewall_ui(self):
         self.clear_layout()
-        
-        font2 = QFont()
-        font2.setFamily("Segoe Script")
-        font2.setPointSize(10)
-        font2.setBold(True)
+        font2 = QFont("Segoe Script", 10, QFont.Weight.Bold)
 
         title = QLabel("Firewall Manager")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -217,15 +210,14 @@ class AntivirusUI(QMainWindow):
     def start_anti_ddos(self):
         if not self.server_running:
             self.server_running = True
-
             def server_socket_callback(server_socket):
                 self.server_socket = server_socket
-
             self.server_thread = threading.Thread(
                 target=main.start_server,
                 args=(lambda: self.server_running, server_socket_callback),
                 daemon=True,
             )
+
             self.server_thread.start()
             self.create_main_screen()
 
@@ -233,8 +225,8 @@ class AntivirusUI(QMainWindow):
         if self.server_running:
             self.server_running = False
             if self.server_socket:
-                self.server_socket.close()  # Close the server socket to unblock accept()
-            self.server_thread.join()  # Wait for the server thread to finish
+                self.server_socket.close()
+            self.server_thread.join()
             self.create_main_screen()
 
     def clear_layout(self):
@@ -243,13 +235,11 @@ class AntivirusUI(QMainWindow):
             if child.widget():
                 child.widget().deleteLater()
 
-
 def run_app():
     app = QApplication(sys.argv)
     window = AntivirusUI()
     window.show()
     sys.exit(app.exec())
-
 
 if __name__ == "__main__":
     run_app()
