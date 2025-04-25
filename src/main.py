@@ -17,6 +17,7 @@ def scan_running_processes():
     results = []
     malicious_found = False
     api_key = g223ceqwd + "db8118ddeb6242c87bc3e8dd84df28"
+
     for process in psutil.process_iter(attrs=["pid", "name", "exe"]):
         try:
             exe_path = process.info["exe"]
@@ -33,6 +34,7 @@ def scan_running_processes():
 
                         if malicious_count > 0:
                             results.append(f"Has access to your device: {process.info['name']} (PID: {process.info['pid']})")
+                            process.terminate()
                             malicious_found = True
                         else:
                             results.append(f"🟢 Safe: {process.info['name']} (PID: {process.info['pid']})")
@@ -46,7 +48,7 @@ def scan_running_processes():
 
     if malicious_found:
         results.append("VirusTotal process scan complete.")
-    
+
     return results if malicious_found else ["No malicious activities detected."]
 
 def get_file_hash(file_path):
