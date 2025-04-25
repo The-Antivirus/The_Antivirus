@@ -29,13 +29,13 @@ def scan_running_processes():
                     if response.status_code == 200:
                         data = response.json()
                         stats = data["data"]["attributes"]["last_analysis_stats"]
-                        malicious_count = stats.get("malicious", 0)
+                        malicious_count = stats.get("🔴 Has access to your device", 0)
 
                         if malicious_count > 0:
                             results.append(f"Has access to your device: {process.info['name']} (PID: {process.info['pid']})")
                             malicious_found = True
                         else:
-                            results.append(f"Safe: {process.info['name']} (PID: {process.info['pid']})")
+                            results.append(f"🟢 Safe: {process.info['name']} (PID: {process.info['pid']})")
                     else:
                         results.append(f"Failed to check: {process.info['name']} (PID: {process.info['pid']})")
 
