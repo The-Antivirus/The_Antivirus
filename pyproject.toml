@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "The_Antivirus"
-version = "0.1.6"
+version = "0.1.7"
 description = "Antivirus software with DDoS prevention and firewall"
 readme = {file = "README.md", content-type = "text/markdown"} 
 license = "MIT" 
@@ -15,7 +15,8 @@ authors = [
 requires-python = ">=3.6"
 dependencies = [
     "psutil>=5.9.0",
-    "PyQt6"
+    "PyQt6",
+    "cryptography"
 ]
 
 [project.urls]
