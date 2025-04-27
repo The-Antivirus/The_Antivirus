@@ -1,0 +1,16 @@
+LICENSE
+MANIFEST.in
+README.md
+pyproject.toml
+images/Untitled-1-01.png
+images/bc.png
+src/__init__.py
+src/main.py
+src/ui.py
+src/The_Antivirus.egg-info/PKG-INFO
+src/The_Antivirus.egg-info/SOURCES.txt
+src/The_Antivirus.egg-info/dependency_links.txt
+src/The_Antivirus.egg-info/entry_points.txt
+src/The_Antivirus.egg-info/requires.txt
+src/The_Antivirus.egg-info/top_level.txt
+tests/test_main.py

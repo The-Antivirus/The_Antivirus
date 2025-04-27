@@ -1,0 +1,2 @@
+[console_scripts]
+the-antivirus = ui:run_app
