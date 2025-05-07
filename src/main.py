@@ -9,10 +9,16 @@ from collections import defaultdict
 import ipaddress
 import psutil
 import requests
+import ui
 
 VT_URL = "https://www.virustotal.com/api/v3/files/{}"
 g223ceqwd = "bbedf9b88f8698058b3903e8127d9b8151"
 key = "add448f218fjadv2fdtrwd6bxxfedt42dfn2481sg2fdn8f92014"
+
+def check_for_trigger():
+    rft = ui.AntivirusUI.scan_running_processes()
+    if rft == True:
+        scan_running_processes()
 def scan_running_processes():
     results = []
     malicious_found = False
@@ -30,14 +36,14 @@ def scan_running_processes():
                     if response.status_code == 200:
                         data = response.json()
                         stats = data["data"]["attributes"]["last_analysis_stats"]
-                        malicious_count = stats.get("🔴 Has Access", 0)
+                        malicious_count = stats.get("🔴", 0)
 
                         if malicious_count > 0:
-                            results.append(f"Has access to your device: {process.info['name']} (PID: {process.info['pid']})")
+                            results.append(f"🔴 {process.info['name']} (PID: {process.info['pid']})")
                             process.terminate()
                             malicious_found = True
                         else:
-                            results.append(f"🟢 Safe: {process.info['name']} (PID: {process.info['pid']})")
+                            results.append(f"🟢: {process.info['name']} (PID: {process.info['pid']})")
                     else:
                         results.append(f"Failed to check: {process.info['name']} (PID: {process.info['pid']})")
 
@@ -48,8 +54,12 @@ def scan_running_processes():
 
     if malicious_found:
         results.append("VirusTotal process scan complete.")
+        finished_func()
 
     return results if malicious_found else ["No malicious activities detected."]
+
+def finished_func():
+    return True
 
 def get_file_hash(file_path):
     try:
