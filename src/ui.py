@@ -1,257 +1,82 @@
-import sys
-import threading
-import socket
-from PyQt6.QtWidgets import (
-    QApplication,
-    QMainWindow,
-    QLabel,
-    QPushButton,
-    QVBoxLayout,
-    QWidget,
-    QTextEdit,
-    QLineEdit,
-    QFrame
-)
-from PyQt6.QtCore import Qt, QThread, pyqtSignal
-from PyQt6.QtGui import QFont
-import main
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QLineEdit, QPushButton, QScrollBar, QHBoxLayout
+from PyQt6.QtCore import pyqtSignal
 
-class ScannerThread(QThread):
-    scan_complete = pyqtSignal(list)
-    def run(self):
-        results = main.scan_running_processes()
-        self.scan_complete.emit(results)
+class ChatBox(QWidget):
+    message_sent = pyqtSignal(str)
+    # THIS IS THE MISSING SIGNAL:
+    voice_input_requested = pyqtSignal()
+    display_ai_response_signal = pyqtSignal(str)
+    display_scan_status_signal = pyqtSignal(str)
+    display_scan_result_signal = pyqtSignal(str)
 
-class AntivirusUI(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Antivirus Project")
-        self.setGeometry(100, 100, 600, 600)
-        self.server_running = False
-        self.server_thread = None
-        self.server_socket = None
-        self.central_widget = QWidget()
-        self.setCentralWidget(self.central_widget)
-        self.layout = QVBoxLayout(self.central_widget)
-        
-        self.button_style_open = """
-            QPushButton {
-                border-radius: 7px;
-                padding: 10px;
-                background-color: #32CD99;
-                color: white;
-                font-size: 10px;
-            }
-        """
 
-        self.button_style_close = """
-            QPushButton {
-                border-radius: 7px;
-                padding: 10px;
-                background-color: #FF0000;
-                color: white;
-                font-size: 10px;
-            }
-        """
-        self.frame_visible = False
-        self.create_main_screen()
+        self.setWindowTitle("Security AI Chat")
+        self.setGeometry(100, 100, 600, 700)
 
-    def create_main_screen(self):
-        self.clear_layout()
-        self.frame = QFrame(self)
-        self.frame.setFrameShape(QFrame.Shape.Box)
-        self.frame.setLineWidth(0)
-        self.frame.setFixedWidth(150)
-        self.frame.setFixedHeight(500)
-        self.frame.hide()
-        
-        self.frame_layout = QVBoxLayout(self.frame)
-        font_title = QFont("Segoe Script", 30, QFont.Weight.Bold)
-        
-        self.title_label = QLabel("Antivirus Project")
-        self.title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.title_label.setStyleSheet("font-size: 30px; font-weight: bold; color: #32CD99;")
-        self.title_label.setFont(font_title)
-        self.layout.addWidget(self.title_label)
+        main_layout = QVBoxLayout()
 
-        scan_button = QPushButton("Scan for Malware")
-        scan_button.setStyleSheet(self.button_style_open)
-        scan_button.clicked.connect(self.create_scanner_ui)
-        scan_button.setFont(QFont("Segoe Script", 10, QFont.Weight.Bold))
-        self.frame_layout.addWidget(scan_button)
+        self.chat_display = QTextEdit()
+        self.chat_display.setReadOnly(True)
+        # No stylesheet for chat_display
+        main_layout.addWidget(self.chat_display)
 
-        firewall_button = QPushButton("Manage Firewall")
-        firewall_button.setStyleSheet(self.button_style_open)
-        firewall_button.clicked.connect(self.create_firewall_ui)
-        firewall_button.setFont(QFont("Segoe Script", 10, QFont.Weight.Bold))
-        self.frame_layout.addWidget(firewall_button)
+        self.input_field = QLineEdit()
+        self.input_field.setPlaceholderText("Type your message here...")
+        self.input_field.returnPressed.connect(self.send_message)
+        # No stylesheet for input_field
+        main_layout.addWidget(self.input_field)
 
-        start_stop_button = QPushButton("Turn On ADS" if not self.server_running else "Turn Off ADS")
-        start_stop_button.setStyleSheet(self.button_style_open if not self.server_running else self.button_style_close)
-        start_stop_button.clicked.connect(self.start_stop_anti_ddos)
-        start_stop_button.setFont(QFont("Segoe Script", 10, QFont.Weight.Bold))
-        self.frame_layout.addWidget(start_stop_button)
+        # Horizontal layout for buttons
+        button_layout = QHBoxLayout()
 
-        self.toggle_button = QPushButton("Open")
-        self.toggle_button.setStyleSheet(self.button_style_open)
-        self.toggle_button.clicked.connect(self.toggle_frame)
-        self.toggle_button.setFont(QFont("Segoe Script", 10, QFont.Weight.Bold))
-        self.toggle_button.setFixedWidth(80)
-        self.layout.addWidget(self.toggle_button)
-        self.layout.addWidget(self.frame)
+        self.send_button = QPushButton("Send")
+        self.send_button.clicked.connect(self.send_message)
+        # No stylesheet for send_button
+        button_layout.addWidget(self.send_button)
 
-    def toggle_frame(self):
-        if not self.frame_visible:
-            self.frame.show()
-            self.toggle_button.setText("Close")
-            self.toggle_button.setStyleSheet(self.button_style_close)
-            self.frame_visible = True
-        else:
-            self.frame.hide()
-            self.toggle_button.setText("Open")
-            self.toggle_button.setStyleSheet(self.button_style_open)
-            self.frame_visible = False
+        # THIS IS THE BUTTON CONNECTED TO THE SIGNAL:
+        self.voice_button = QPushButton("Voice Input")
+        self.voice_button.clicked.connect(self.request_voice_input)
+        # No stylesheet for voice_button
+        button_layout.addWidget(self.voice_button)
 
-    def create_scanner_ui(self):
-        self.clear_layout()
-        font2 = QFont("Segoe Script", 10, QFont.Weight.Bold)
-        title = QLabel("Malware Scanner")
+        main_layout.addLayout(button_layout) # Add the button layout to the main layout
 
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 16px; font-weight: bold; color: #32CD99;")
-        title.setFont(font2)
-        self.layout.addWidget(title)
+        self.setLayout(main_layout)
 
-        self.results_text = QTextEdit()
-        self.results_text.setReadOnly(True)
-        self.layout.addWidget(self.results_text)
+        # Connect signals from Worker in main.py to UI display methods
+        self.display_ai_response_signal.connect(self._display_ai_response_on_ui)
+        self.display_scan_status_signal.connect(self._display_scan_status_on_ui)
+        self.display_scan_result_signal.connect(self._display_scan_result_on_ui)
 
-        self.scan_button = QPushButton("Scan Running Processes")
-        self.scan_button.setStyleSheet("color: #32CD99;")
-        self.scan_button.clicked.connect(self.scan_running_processes)
-        self.scan_button.setFont(font2)
-        self.layout.addWidget(self.scan_button)
+    def send_message(self):
+        message = self.input_field.text().strip()
+        if message:
+            self.chat_display.append(f"<p style='color:#007bff; font-weight:bold;'>You:</p><p>{message}</p>")
+            self.message_sent.emit(message) # Emits text prompt to main.py
+            self.input_field.clear()
+            self._auto_scroll()
 
-        back_button = QPushButton("Back")
-        back_button.setStyleSheet("color: #32CD99;")
-        back_button.clicked.connect(self.create_main_screen)
-        back_button.setFont(font2)
-        self.layout.addWidget(back_button)
+    # THIS IS THE METHOD THAT EMITS THE SIGNAL:
+    def request_voice_input(self):
+        """Emits a signal to main.py to start voice recognition."""
+        self.chat_display.append(f"<p style='color:#6c757d;'><i>Voice input requested... Please allow microphone access if prompted.</i></p>")
+        self._auto_scroll()
+        self.voice_input_requested.emit() # Emits signal to main.py
 
-    def scan_running_processes(self):
-        self.results_text.append("Scanning processes, This will take a while.\nNote that not all flagged files are malicious.")
-        print("Starting scan...")
+    def _display_ai_response_on_ui(self, text):
+        self.chat_display.append(text)
+        self._auto_scroll()
 
-        self.scan_button.setEnabled(False)
+    def _display_scan_status_on_ui(self, text):
+        self.chat_display.append(f"<p style='color:#6c757d;'><i>{text}</i></p>")
+        self._auto_scroll()
 
-        self.scanner_thread = ScannerThread()
-        self.scanner_thread.scan_complete.connect(self.update_scan_results)
-        self.scanner_thread.start()
+    def _display_scan_result_on_ui(self, text):
+        self.chat_display.append(text)
+        self._auto_scroll()
 
-    def update_scan_results(self, results):
-        self.results_text.append("\n".join(results))
-        self.results_text.append("VirusTotal process scan complete.")
-
-        self.scan_button.setEnabled(True)
-
-    def create_firewall_ui(self):
-        self.clear_layout()
-        font2 = QFont("Segoe Script", 10, QFont.Weight.Bold)
-        title = QLabel("Firewall Manager")
-
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setStyleSheet("font-size: 16px; font-weight: bold; color: #32CD99;")
-        title.setFont(font2)
-        self.layout.addWidget(title)
-
-        self.allow_entry = QLineEdit()
-        self.allow_entry.setPlaceholderText("Enter IP to allow")
-        self.allow_entry.setFont(font2)
-        self.layout.addWidget(self.allow_entry)
-
-        allow_button = QPushButton("Add Allowed IP")
-        allow_button.setStyleSheet("color: #32CD99;")
-        allow_button.clicked.connect(self.add_allowed_ip)
-        allow_button.setFont(font2)
-        self.layout.addWidget(allow_button)
-
-        self.block_entry = QLineEdit()
-        self.block_entry.setPlaceholderText("Enter IP to block")
-        self.block_entry.setFont(font2)
-        self.layout.addWidget(self.block_entry)
-
-        block_button = QPushButton("Add Blocked IP")
-        block_button.setStyleSheet("color: #32CD99;")
-        block_button.clicked.connect(self.add_blocked_ip)
-        block_button.setFont(font2)
-        self.layout.addWidget(block_button)
-
-        self.rules_text = QTextEdit()
-        self.rules_text.setReadOnly(True)
-        self.layout.addWidget(self.rules_text)
-
-        back_button = QPushButton("Back")
-        back_button.setStyleSheet("color: #32CD99;")
-        back_button.clicked.connect(self.create_main_screen)
-        back_button.setFont(font2)
-        self.layout.addWidget(back_button)
-        self.display_firewall_rules()
-
-    def add_allowed_ip(self):
-        ip = self.allow_entry.text()
-        main.add_allowed_ip(ip)
-        self.display_firewall_rules()
-
-    def add_blocked_ip(self):
-        ip = self.block_entry.text()
-        main.add_blocked_ip(ip)
-        self.display_firewall_rules()
-
-    def display_firewall_rules(self):
-        rules = main.get_firewall_rules()
-        self.rules_text.clear()
-        self.rules_text.append("Allowed IPs:")
-        self.rules_text.append("\n".join(rules["allow"]))
-        self.rules_text.append("\nBlocked IPs:")
-        self.rules_text.append("\n".join(rules["block"]))
-
-    def start_stop_anti_ddos(self):
-        if not self.server_running:
-            self.start_anti_ddos()
-        else:
-            self.stop_anti_ddos()
-
-    def start_anti_ddos(self):
-        if not self.server_running:
-            self.server_running = True
-            def server_socket_callback(server_socket):
-                self.server_socket = server_socket
-            self.server_thread = threading.Thread(
-                target=main.start_server,
-                args=(lambda: self.server_running, server_socket_callback),
-                daemon=True,
-            )
-            self.server_thread.start()
-            self.create_main_screen()
-
-    def stop_anti_ddos(self):
-        if self.server_running:
-            self.server_running = False
-            if self.server_socket:
-                self.server_socket.close()
-            self.server_thread.join()
-            self.create_main_screen()
-
-    def clear_layout(self):
-        while self.layout.count():
-            child = self.layout.takeAt(0)
-            if child.widget():
-                child.widget().deleteLater()
-
-def run_app():
-    app = QApplication(sys.argv)
-    window = AntivirusUI()
-    window.show()
-    sys.exit(app.exec())
-if __name__ == "__main__":
-    run_app()
+    def _auto_scroll(self):
+        self.chat_display.verticalScrollBar().setValue(self.chat_display.verticalScrollBar().maximum())
