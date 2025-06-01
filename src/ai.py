@@ -37,8 +37,8 @@ def generate_prompt(prompt): # <-- THIS IS THE FUNCTION main.py IS LOOKING FOR
         return "AI Error: Could not initialize AI model."
 
     suspicious_keywords = {
-        "downloads": ["download folder", "suspicion of downloading", "downloaded file", "downloaded application", "download", "downloads"],
-        "running_file": ["running file", "suspicion of running process", "process running", "executable running", "active program"]
+        "downloads": ["download folder", "suspicion of downloading", "downloaded file", "downloaded application", "download", "downloads", "install", "installed"],
+        "running_file": ["running file", "suspicion of running process", "process running", "executable running", "active program", "running", "active"]
     }
 
     prompt_suspicions = queue.Queue()
