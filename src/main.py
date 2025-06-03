@@ -103,28 +103,31 @@ class Worker(QObject):
         else:
             self.scan_status_signal.emit("AI analyzing text prompt...")
 
-        # Assuming ai.generate_prompt is a blocking call, it runs safely in this worker thread
         ai_response = ai.generate_prompt(prompt)
         self.ai_response_signal.emit(f"{ai_response}") # Send AI's raw response; UI formats it
 
-        # Check for specific security suspicions from AI
-        if ai_response.startswith("SUSPICION_DETECTED:"):
-            suspicion_data = ai_response[len("SUSPICIÓN_DETECTED:"):]
-            suspicions = [s.strip() for s in suspicion_data.split(',')]
-
-            for suspicion in suspicions:
-                if suspicion == "downloads":
-                    self.scan_status_signal.emit("AI detected 'downloads' suspicion. Initiating Downloads folder scan...")
-                    downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
-                    self._scan_directory(downloads_path)
-                elif suspicion == "running_file":
-                    self.scan_status_signal.emit("AI detected 'running_file' suspicion. Initiating running process scan...")
-                    self._scan_running_processes()
-                else:
-                    self.scan_status_signal.emit(f"AI detected unrecognized suspicion: {suspicion}")
-        else:
-            self.scan_status_signal.emit("No specific security suspicion detected by AI. Performing default process scan...")
+        # Only scan if AI explicitly returns SCAN_FOLDER:<folder_path> or SCAN_PROCESSES
+        if ai_response.startswith("SCAN_FOLDER:"):
+            folder_path = ai_response[len("SCAN_FOLDER:"):].strip()
+            # Replace 'username' with the actual username if present (case-insensitive)
+            if 'username' in folder_path.lower():
+                actual_username = os.getlogin()
+                import re
+                folder_path = re.sub(r'username', actual_username, folder_path, flags=re.IGNORECASE)
+            print(f"[DEBUG] Resolved folder_path: {folder_path}")
+            if os.path.isdir(folder_path):
+                self.scan_status_signal.emit(f"AI requested scan of folder: {folder_path}")
+                self._scan_directory(folder_path)
+            else:
+                self.scan_status_signal.emit(f"AI requested scan of folder, but path not found: {folder_path}")
+                print(f"[DEBUG] Path not found: {folder_path}")
+        elif ai_response.strip() == "SCAN_PROCESSES":
+            self.scan_status_signal.emit("AI requested scan of all running processes.")
             self._scan_running_processes()
+        # Do NOT scan anything if AI did not request it
+        # else:
+        #     self.scan_status_signal.emit("No folder or process scan requested. Skipping scan.")
+        #     # Optionally, you can display a message or do nothing
 
         # Retrieve any queued scan results from the AI module (if AI module buffers them)
         all_scan_results = ai.get_queue_contents()

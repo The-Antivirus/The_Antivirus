@@ -5,9 +5,8 @@ import sys # Added for printing to stderr
 print("ai.py: Starting module initialization...")
 
 try:
-    # IMPORTANT: Replace "AIzaSyBTCuHASbyDTM0cUYb8oa3DQGP6POXYOyM" with your actual Google Gemini API key.
-    # If this key is invalid or has issues, the program might still fail later when using the model.
-    genai.configure(api_key="AIzaSyBTCuHASbyDTM0cUYb8oa3DQGP6POXYOyM")
+    # IMPORTANT: Replace with your actual Google Gemini API key.
+    genai.configure(api_key="AIzaSyD6NtJM4EiXdGUPxCH7KY5f6_4k3Yglfxs")
     print("ai.py: Google Generative AI configured successfully.")
 except Exception as e:
     print(f"ai.py ERROR: Failed to configure Google Generative AI: {e}", file=sys.stderr)
@@ -28,36 +27,28 @@ def get_queue_contents():
         contents.append(scan_results_queue.get())
     return contents
 
-def generate_prompt(prompt): # <-- THIS IS THE FUNCTION main.py IS LOOKING FOR
-    """Generates an AI response or detects security suspicions from a user prompt."""
+def generate_prompt(prompt):
+    """
+    Uses Gemini AI to decide if a folder or running processes should be scanned based on the user prompt.
+    If so, returns 'SCAN_FOLDER:<absolute_path>' or 'SCAN_PROCESSES'.
+    Otherwise, returns the AI's normal response.
+    """
     try:
         model = genai.GenerativeModel("gemini-2.0-flash")
     except Exception as e:
         print(f"ai.py ERROR: Failed to create GenerativeModel (check API key/network): {e}", file=sys.stderr)
         return "AI Error: Could not initialize AI model."
 
-    suspicious_keywords = {
-        "downloads": ["download folder", "suspicion of downloading", "downloaded file", "downloaded application", "download", "downloads", "install", "installed"],
-        "running_file": ["running file", "suspicion of running process", "process running", "executable running", "active program", "running", "active"]
-    }
-
-    prompt_suspicions = queue.Queue()
-
-    # Check for suspicious keywords in the user's prompt
-    for suspicion, keywords in suspicious_keywords.items():
-        if any(keyword in prompt.lower() for keyword in keywords):
-            prompt_suspicions.put(suspicion)
-            print(prompt_suspicions)
-
-    # If suspicions are detected, signal them to the main program
-    if not prompt_suspicions.empty():
-        suspicion_list = ", ".join(list(prompt_suspicions.queue))
-        return f"SUSPICION_DETECTED:{suspicion_list}"
-
-    # Otherwise, generate a general AI response
+    # Update system instruction to include SCAN_PROCESSES response
+    system_instruction = (
+        "You are an antivirus assistant. If the user's prompt suggests scanning a specific folder, "
+        "respond ONLY with: SCAN_FOLDER:<absolute_path> (e.g., SCAN_FOLDER:C:/Users/username/Downloads). "
+        "If the user's prompt suggests scanning all running processes for malware, respond ONLY with: SCAN_PROCESSES. "
+        "If no scan is needed, respond with a helpful message or answer as usual. Do not explain the scan commands."
+    )
     try:
-        response = model.generate_content(prompt)
-        return response.text
+        response = model.generate_content(f"{system_instruction}\nUser prompt: {prompt}")
+        return response.text.strip()
     except Exception as e:
         print(f"ai.py ERROR: Error generating content from AI: {e}", file=sys.stderr)
         return f"AI Error: Could not generate content - {e}"
