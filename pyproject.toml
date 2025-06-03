@@ -3,8 +3,8 @@ requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "The_Antivirus"
-version = "0.1.7"
+name = "The-Antivirus-dg"
+version = "0.2.0"
 description = "Antivirus software with DDoS prevention and firewall"
 readme = {file = "README.md", content-type = "text/markdown"} 
 license = "MIT" 
